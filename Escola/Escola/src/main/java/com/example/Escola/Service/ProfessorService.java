@@ -35,7 +35,20 @@ public class ProfessorService {
         Optional<Professor> professorOptional = professorRepository.findById(id);
         if (professorOptional.isPresent()){
             Professor professor = professorOptional.get();
-            professor.setNome(professorDTO);
+            professor.setNome(professorDTO.getNome());
+            professor.setSobrenome(professorDTO.getSobrenome());
+            professor = professorRepository.save(professor);
+            return Optional.of(professorDTO.fromProfessor(professor));
+        }else {
+            return Optional.empty();
+        }
+    }
+    public boolean delete(Long id){
+        if(professorRepository.existsById(id)){
+            professorRepository.deleteById(id);
+            return true;
+        }else {
+            return false;
         }
     }
 }
