@@ -35,8 +35,14 @@ public class AlunoService {
         return alunoRepository.findAllByCpf(cpf);
     }
 
+    // 4. cadastrar aluno
+    public AlunoDTO createAluno(AlunoDTO alunoDTO) {
+        Aluno aluno = alunoDTO.toAluno();
+        aluno = alunoRepository.save(aluno);
+        return alunoDTO.fromAluno(aluno);
+    }
 
-    // 4. atualizar dados
+    // 5. atualizar dados
     public Optional<AlunoDTO> updateAluno(Long id, AlunoDTO alunoDTO) {
         Optional<Aluno> alunoOptional = alunoRepository.findById(id);
         if (alunoOptional.isPresent()) {
@@ -53,7 +59,7 @@ public class AlunoService {
         }
     }
 
-    // 5. deletar
+    // 6. deletar
     public boolean delete(Long id) {
         if(alunoRepository.existsById(id)) {
             alunoRepository.deleteById(id);

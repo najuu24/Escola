@@ -15,7 +15,7 @@ public class AlunoDTO implements Serializable {
     private String nome;
     private String cpf;
 
-    private Aluno toAluno(){
+    public Aluno toAluno(){
         return new Aluno(
                 this.id,
                 this.nome,
