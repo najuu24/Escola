@@ -1,71 +1,74 @@
 package com.example.Escola.Service;
 
 import com.example.Escola.DTO.AlunoDTO;
+import com.example.Escola.DTO.ProfessorDTO;
 import com.example.Escola.Entity.Aluno;
+import com.example.Escola.Entity.Professor;
+import com.example.Escola.Entity.Turma;
 import com.example.Escola.Repository.AlunoRepository;
+import com.example.Escola.Repository.ProfessorRepository;
+import com.example.Escola.Repository.TurmaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AlunoService {
+
     @Autowired
     private AlunoRepository alunoRepository;
 
-    // 1. buscar todos
-    public List<Aluno> getAll() {
-        return alunoRepository.findAll();
+    @Autowired
+    private TurmaRepository turmaRepository;
+
+    public AlunoDTO create(AlunoDTO dto) {
+        Aluno aluno = alunoRepository.save(dto.toAluno());
+        return AlunoDTO.fromAluno(aluno);
     }
 
-    // 2. buscar por id
-    public Optional<AlunoDTO> getById(Long id) {
-        Optional<Aluno> alunoOptional = alunoRepository.findById(id);
-        if (alunoOptional.isPresent()) {
-            AlunoDTO alunoDTO = new AlunoDTO();
-            return Optional.of(alunoDTO.fromAluno(alunoOptional.get()));
-        } else {
-            return Optional.empty();
-        }
+    public List<AlunoDTO> findAll() {
+        return alunoRepository.findAll().stream()
+                .map(AlunoDTO::fromAluno)
+                .collect(Collectors.toList());
     }
 
-    // 3. buscar por cpf
-    public List<Aluno> getAllByCpf(String cpf) {
-        return alunoRepository.findAllByCpf(cpf);
+    public AlunoDTO findById(Long id) {
+        return alunoRepository.findById(id)
+                .map(AlunoDTO::fromAluno)
+                .orElse(null);
     }
 
-    // 4. cadastrar aluno
-    public AlunoDTO createAluno(AlunoDTO alunoDTO) {
-        Aluno aluno = alunoDTO.toAluno();
-        aluno = alunoRepository.save(aluno);
-        return alunoDTO.fromAluno(aluno);
+    public AlunoDTO findByCpf(String cpf) {
+        return alunoRepository.findByCpf(cpf)
+                .map(AlunoDTO::fromAluno)
+                .orElse(null);
     }
 
-    // 5. atualizar dados
-    public Optional<AlunoDTO> updateAluno(Long id, AlunoDTO alunoDTO) {
-        Optional<Aluno> alunoOptional = alunoRepository.findById(id);
-        if (alunoOptional.isPresent()) {
-            Aluno aluno = alunoOptional.get();
-            aluno.setId(alunoDTO.getId());
-            aluno.setNome(alunoDTO.getNome());
-            aluno.setCpf(alunoDTO.getCpf());
-
-            aluno = alunoRepository.save(aluno);
-
-            return Optional.of(alunoDTO.fromAluno(aluno));
-        } else {
-            return Optional.empty();
-        }
+    public AlunoDTO update(Long id, AlunoDTO dto) {
+        Aluno aluno = alunoRepository.findById(id).orElseThrow();
+        aluno.setNome(dto.getNome());
+        aluno.setCpf(dto.getCpf());
+        alunoRepository.save(aluno);
+        return AlunoDTO.fromAluno(aluno);
     }
 
-    // 6. deletar
-    public boolean delete(Long id) {
-        if(alunoRepository.existsById(id)) {
-            alunoRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
+    public void delete(Long id) {
+        alunoRepository.deleteById(id);
+    }
+
+    public void addToTurma(Long alunoId, Long turmaId) {
+        Aluno aluno = alunoRepository.findById(alunoId).orElseThrow();
+        Turma turma = turmaRepository.findById(turmaId).orElseThrow();
+        aluno.setTurma(turma);
+        alunoRepository.save(aluno);
+    }
+
+    public void removeFromTurma(Long alunoId) {
+        Aluno aluno = alunoRepository.findById(alunoId).orElseThrow();
+        aluno.setTurma(null);
+        alunoRepository.save(aluno);
     }
 }

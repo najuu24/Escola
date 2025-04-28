@@ -18,51 +18,43 @@ public class AlunoController {
     @Autowired
     private AlunoService alunoService;
 
-    // 1. buscar todos
-    @GetMapping
-    public List<Aluno> getAll(@RequestParam(required = false) String cpf) {
-        if(cpf != null && !cpf.isEmpty()) {
-            return alunoService.getAllByCpf(cpf);
-        }
-        return alunoService.getAll();
-    }
-
-    // 2. buscar por id
-    @GetMapping("/{id}")
-    public ResponseEntity<AlunoDTO> getById(@PathVariable Long id) {
-        Optional<AlunoDTO> alunoDTOOptional = alunoService.getById(id);
-        if (alunoDTOOptional.isPresent()) {
-            return ResponseEntity.ok(alunoDTOOptional.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // 4. cadastrar alunos
     @PostMapping
-    public ResponseEntity<AlunoDTO> create(@RequestBody AlunoDTO alunoDTO) {
-        AlunoDTO alunoDTOSave = alunoService.createAluno(alunoDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(alunoDTOSave);
+    public AlunoDTO create(@RequestBody AlunoDTO dto) {
+        return alunoService.create(dto);
     }
 
-    // 5. atualizar dados
+    @GetMapping
+    public List<AlunoDTO> findAll() {
+        return alunoService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public AlunoDTO findById(@PathVariable Long id) {
+        return alunoService.findById(id);
+    }
+
+    @GetMapping("/cpf/{cpf}")
+    public AlunoDTO findByCpf(@PathVariable String cpf) {
+        return alunoService.findByCpf(cpf);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<AlunoDTO> update(@PathVariable Long id, @RequestBody AlunoDTO alunoDTO) {
-        Optional<AlunoDTO> alunoDTOOptional = alunoService.updateAluno(id, alunoDTO);
-        if (alunoDTOOptional.isPresent()) {
-            return ResponseEntity.ok(alunoDTOOptional.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public AlunoDTO update(@PathVariable Long id, @RequestBody AlunoDTO dto) {
+        return alunoService.update(id, dto);
     }
 
-    // 6. deletar
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (alunoService.delete(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public void delete(@PathVariable Long id) {
+        alunoService.delete(id);
+    }
+
+    @PostMapping("/{alunoId}/turma/{turmaId}")
+    public void addToTurma(@PathVariable Long alunoId, @PathVariable Long turmaId) {
+        alunoService.addToTurma(alunoId, turmaId);
+    }
+
+    @DeleteMapping("/{alunoId}/turma")
+    public void removeFromTurma(@PathVariable Long alunoId) {
+        alunoService.removeFromTurma(alunoId);
     }
 }

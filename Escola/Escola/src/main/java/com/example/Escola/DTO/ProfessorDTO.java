@@ -1,9 +1,7 @@
 package com.example.Escola.DTO;
 
 import com.example.Escola.Entity.Professor;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -15,19 +13,45 @@ public class ProfessorDTO implements Serializable {
     private String nome;
     private String sobrenome;
 
-    public Professor toProfessor(){
-        return new Professor(
-                this.id,
-                this.nome,
-                this.sobrenome
-        );
+    //get set pq lombok e podre horrivel
+    public Long getId() {
+        return id;
     }
 
-    public ProfessorDTO fromProfessor(Professor professor){
-        return new ProfessorDTO(
-            professor.getId(),
-            professor.getNome(),
-            professor.getSobrenome()
-        );
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getSobrenome() {
+        return sobrenome;
+    }
+
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
+    }
+    //get set pq lombok e podre horrivel (FIM)
+
+    public Professor toProfessor() {
+        Professor professor = new Professor();
+        professor.setId(this.id);
+        professor.setNome(this.nome);
+        professor.setSobrenome(this.sobrenome);
+        return professor;
+    }
+
+    public static ProfessorDTO fromProfessor(Professor professor) {
+        ProfessorDTO dto = new ProfessorDTO();
+        dto.setId(professor.getId());
+        dto.setNome(professor.getNome());
+        dto.setSobrenome(professor.getSobrenome());
+        return dto;
     }
 }

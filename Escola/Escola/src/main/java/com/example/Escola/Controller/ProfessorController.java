@@ -1,38 +1,46 @@
 package com.example.Escola.Controller;
 
 import com.example.Escola.DTO.ProfessorDTO;
-import com.example.Escola.Entity.Professor;
 import com.example.Escola.Service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.ClientInfoStatus;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-RequestMapping("/professor")
+@RequestMapping("/professor")
 public class ProfessorController {
 
     @Autowired
     private ProfessorService professorService;
 
+    @PostMapping
+    public ProfessorDTO create(@RequestBody ProfessorDTO dto) {
+        return professorService.create(dto);
+    }
+
     @GetMapping
-    public List<Professor> getAll(){
-        return professorService.getAll();
+    public List<ProfessorDTO> findAll() {
+        return professorService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfessorDTO> getById(@PathVariable Long id){
-        Optional<ProfessorDTO> professorDTOOptional = professorService.getById(id);
-        if (professorDTOOptional.isPresent()){
-            return new ResponseEntity.ok(clienteDTOOptional.get());
-        }else {
-            return new ResponseEntity.notFound().build();
-        }
+    public ProfessorDTO findById(@PathVariable Long id) {
+        return professorService.findById(id);
+    }
+
+    @GetMapping("/nome/{nome}")
+    public List<ProfessorDTO> findByNome(@PathVariable String nome) {
+        return professorService.findByNome(nome);
+    }
+
+    @PutMapping("/{id}")
+    public ProfessorDTO update(@PathVariable Long id, @RequestBody ProfessorDTO dto) {
+        return professorService.update(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        professorService.delete(id);
     }
 }
