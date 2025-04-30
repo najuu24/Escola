@@ -1,16 +1,11 @@
 package com.example.Escola.Controller;
 
 import com.example.Escola.DTO.AlunoDTO;
-import com.example.Escola.Entity.Aluno;
 import com.example.Escola.Service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/aluno")
